@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Xtra Ordinary Vour"
+description = "A vivid, responsive landing page for PNGTuber group Xtra Ordinary Vour, featuring creator introductions, featured content, and direct links to the YouTube channel."
+version = "1.0.0"
+id = "artifacts/xtraordinary-vour"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 23682
+
+[services.development]
+run = "pnpm --filter @workspace/xtraordinary-vour run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/xtraordinary-vour", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/xtraordinary-vour/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23682"
+BASE_PATH = "/"
