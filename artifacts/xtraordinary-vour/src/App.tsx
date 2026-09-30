@@ -1,10 +1,11 @@
-import { type CSSProperties, type ReactNode, useEffect, useState } from 'react';
-import { ArrowDown, ArrowUpRight, Menu, Play, Sparkles, X } from 'lucide-react';
+import { type ReactNode, useEffect, useState } from 'react';
+import { ArrowDown, ArrowUpRight, Menu, Play, Upload, X } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import NotFound from '@/pages/not-found';
+import logo from '@assets/Tak_berjudul388_20260504151152_1790731249936.png';
 import {
   Route,
   Switch,
@@ -35,131 +36,131 @@ function Home() {
     return () => observer.disconnect();
   }, []);
 
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMenuOpen(false);
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, []);
+
   const closeMenu = () => setMenuOpen(false);
-  const channel = 'https://youtube.com/@xtraordinaryvour';
+  const channel = 'https://youtube.com/@xtraordinaryvour?si=5Nu1DsjIdGtPeEm0';
   const members = [
-    { name: 'Nara Vey', role: 'Penjaga siaran larut', copy: 'Mengumpulkan cerita yang tercecer di sela-sela malam.', note: 'arsiparis mimpi', initials: 'NV', color: '#f5d66c', bg: '#846958', skin: '#e9b99f', hair: '#302740', coat: '#eccf77' },
-    { name: 'Mika Sora', role: 'Pengacak frekuensi', copy: 'Datang membawa teori aneh dan tawa yang menular.', note: 'radio dari awan', initials: 'MS', color: '#86d6c3', bg: '#477776', skin: '#f0c4ac', hair: '#241e3b', coat: '#78cbbb' },
-    { name: 'Rumi Vale', role: 'Kurator benda ganjil', copy: 'Setiap benda punya kisah. Ia tahu sebagian besar kisahnya.', note: 'kolektor kecil', initials: 'RV', color: '#f08b78', bg: '#9b625a', skin: '#e8b79d', hair: '#40304a', coat: '#ed8f7a' },
-    { name: 'Kiyo Noct', role: 'Penerjemah sunyi', copy: 'Membuat hal rumit terasa seperti obrolan di teras.', note: 'peta yang berjalan', initials: 'KN', color: '#bba1df', bg: '#65587e', skin: '#f0c8aa', hair: '#29243b', coat: '#b89ad8' },
+    { name: 'Azelyth Faeren', alias: 'Eren/Ren', channel: 'https://youtube.com/@zelren14?si=NcVyPXxS2c7NfIhX', image: null as string | null },
+    { name: 'Riyuzi Vynae', alias: 'Riyu', channel: 'https://www.youtube.com/@RiyuziVynae', image: null as string | null },
+    { name: 'Azaa Lockwood', alias: 'Azaa', channel: 'https://youtube.com/@azaalockwood?si=-I9GXMdRn6uAtvVJ', image: null as string | null },
+    { name: 'Shezi Asta Freola', alias: 'Frell', channel: 'https://www.youtube.com/@Rawrr_Frell', image: null as string | null },
   ];
 
   return (
     <div className="site-shell">
       <header className="topbar">
         <a className="brand" href="#awal" onClick={closeMenu} aria-label="Xtra Ordinary Vour, ke awal">
-          <span className="brand-mark">xv</span><span>XTRA ORDINARY<small>VOUR / BROADCAST CLUB</small></span>
+          <span className="brand-logo"><img src={logo} alt="" /></span>
+          <span className="brand-copy">XTRA ORDINARY<small>VOUR / CREATOR COLLECTIVE</small></span>
         </a>
-        <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Tutup navigasi' : 'Buka navigasi'} aria-expanded={menuOpen} onClick={() => setMenuOpen(!menuOpen)} data-testid="button-menu">
+        <button className="menu-toggle" type="button" aria-label={menuOpen ? 'Tutup navigasi' : 'Buka navigasi'} aria-expanded={menuOpen} aria-controls="main-navigation" onClick={() => setMenuOpen(!menuOpen)} data-testid="button-menu">
           {menuOpen ? <X size={18} /> : <Menu size={18} />}
         </button>
-        <nav className={`nav-links${menuOpen ? ' is-open' : ''}`} aria-label="Navigasi utama">
-          <a href="#cerita" onClick={closeMenu}>Cerita kami</a>
-          <a href="#wajah" onClick={closeMenu}>Para penghuni</a>
-          <a href="#frekuensi" onClick={closeMenu}>Isi siaran</a>
-          <a className="nav-cta" href={channel} target="_blank" rel="noreferrer" onClick={closeMenu}>Temukan di YouTube <ArrowUpRight /></a>
+        <nav id="main-navigation" className={`nav-links${menuOpen ? ' is-open' : ''}`} aria-label="Navigasi utama">
+          <a href="#tentang" onClick={closeMenu} data-testid="link-about">Tentang</a>
+          <a href="#anggota" onClick={closeMenu} data-testid="link-members">Anggota</a>
+          <a href="#kanal" onClick={closeMenu} data-testid="link-channel">Kanal utama</a>
+          <a className="nav-cta" href={channel} target="_blank" rel="noreferrer" onClick={closeMenu} data-testid="link-youtube-nav">Kunjungi YouTube <ArrowUpRight /></a>
         </nav>
       </header>
 
       <main>
         <section className="hero" id="awal" aria-labelledby="hero-title">
           <div className="hero-copy">
-            <div className="eyebrow">Siaran dari sisi lain layar</div>
-            <h1 id="hero-title"><span>XTRA</span><span>ordinary</span><span>VOUR.</span></h1>
-            <p className="hero-intro">Kami sekelompok suara dari tempat yang tidak ada di peta. Datanglah untuk satu cerita—tinggallah karena obrolannya.</p>
+            <div className="eyebrow">Xtra Ordinary Vour · Indonesia</div>
+            <h1 id="hero-title"><span>Xtra</span><span>ordinary</span><span>Vour.</span></h1>
+            <p className="hero-intro">Empat kreator, satu nama kolektif. Kenali para anggota dan temukan kanal mereka—semua dimulai dari sini.</p>
             <div className="hero-actions">
-              <a className="button-primary" href={channel} target="_blank" rel="noreferrer" data-testid="link-youtube-hero"><Play fill="currentColor" /> Masuk ke siaran <ArrowUpRight /></a>
-              <a className="button-quiet" href="#cerita">Kenali semesta ini <ArrowDown /></a>
+              <a className="button-primary" href={channel} target="_blank" rel="noreferrer" data-testid="link-youtube-hero"><Play fill="currentColor" /> Kanal utama <ArrowUpRight /></a>
+              <a className="button-quiet" href="#anggota" data-testid="link-explore-members">Kenali anggota <ArrowDown /></a>
             </div>
           </div>
-          <div className="hero-art" aria-label="Ilustrasi abstrak seorang penyiar dari dunia imajinatif" role="img">
-            <div className="orbit"><i className="planet" /></div>
-            <div className="portrait"><i className="ear" /><i className="eye" /><i className="blush" /><i className="collar" /></div>
-            <div className="orbit-note">halo, pendengar</div>
-            <div className="stamp">aneh itu<br />tempat pulang</div>
+          <div className="hero-emblem" aria-hidden="true">
+            <div className="emblem-ring" />
+            <div className="emblem-cut" /><div className="emblem-cut two" />
+            <div className="emblem-xv">XV</div>
+            <span className="emblem-label">CREATOR COLLECTIVE / ID</span>
           </div>
-          <span className="side-caption">PENERIMAAN SINYAL / 00:00 — SELALU</span>
-          <span className="hero-index">ID.01 / SEBUAH PERKENALAN</span>
-          <a className="hero-scroll" href="#cerita">Gulir pelan-pelan ↓</a>
+          <span className="hero-index">XOV / PERKENALAN</span>
+          <a className="hero-scroll" href="#tentang" data-testid="link-scroll-about">Jelajahi <span>↓</span></a>
         </section>
 
-        <div className="disclaimer" role="note" data-testid="notice-placeholder">
-          <Sparkles aria-hidden="true" /><span><strong>CATATAN STUDIO:</strong> Profil, cerita, format, dan seluruh detail di halaman ini adalah contoh / placeholder untuk diganti oleh pemilik kanal.</span>
-        </div>
-
-        <section className="section manifesto" id="cerita">
+        <section className="section intro-section" id="tentang">
           <div className="reveal">
-            <div className="section-kicker">01 — Sedikit tentang kami</div>
-            <h2 className="section-title">Tidak semua<br />yang aneh itu<br /><em>asing.</em></h2>
-            <div className="scribble">sinyalmu<br />sampai</div>
+            <div className="section-kicker">01 / Tentang XOV</div>
+            <h2 className="section-title">Ruang untuk<br />jadi <em>extra.</em></h2>
+            <div className="intro-mark">XTRA ORDINARY VOUR — INDONESIA</div>
           </div>
-          <div className="manifesto-copy reveal delay-1">
-            <p className="big-line">“Kadang kita cuma perlu ruang yang tidak meminta kita jadi biasa.”</p>
-            <p>Xtra Ordinary Vour adalah konsep rumah siaran untuk para pencerita, pengelana ide, dan manusia-manusia sedikit tidak biasa. Bukan soal menjadi paling lantang. Ini tentang menemukan frekuensi yang terasa seperti milik sendiri.</p>
-            <p>Anggap halaman ini sebagai undangan masuk ke ruang obrolan imajiner kami. Kru dan kisah di bawah masih berupa contoh—kepribadian aslinya menunggu untuk kamu kenal di kanal resmi.</p>
+          <div className="intro-copy reveal delay-1">
+            <p className="statement">Empat nama kreator berkumpul di bawah satu identitas: Xtra Ordinary Vour.</p>
+            <p>Temukan kanal utama XOV, lalu kunjungi halaman setiap anggota untuk mengenal karya mereka lebih dekat. Halaman ini akan terus menjadi titik temu untuk semua kanal.</p>
           </div>
         </section>
 
-        <section className="section members" id="wajah">
+        <section className="section members" id="anggota">
           <div className="section-head reveal">
-            <div><div className="section-kicker">02 — Kru contoh / placeholder</div><h2 className="section-title">Yang menjaga<br /><em>frekuensi.</em></h2></div>
-            <p>Empat suara, empat sudut pandang. Nama, profil, dan ilustrasi berikut hanya bahan contoh—silakan ganti dengan anggota resmi.</p>
+            <div><div className="section-kicker">02 / Para anggota</div><h2 className="section-title">Temui para<br /><em>kreator.</em></h2></div>
+            <p>Empat anggota Xtra Ordinary Vour. Pilih nama untuk menuju kanal masing-masing.</p>
           </div>
-          <div className="member-grid">
+          <div className="member-grid" data-testid="member-grid">
             {members.map((member, index) => (
-              <article className={`member-card reveal delay-${index % 3 + 1}`} key={member.initials} style={{ '--member-color': member.color, '--member-bg': member.bg, '--skin': member.skin, '--hair': member.hair, '--coat': member.coat } as CSSProperties} data-testid={`card-member-${member.initials.toLowerCase()}`}>
-                <div className="member-art" role="img" aria-label={`Ilustrasi placeholder ${member.name}`}>
-                  <span className="member-number">XV—0{index + 1}</span><div className="mini-person"><i className="body" /></div><span className="member-orbit-label">{member.note}</span>
+              <article className={`member-card reveal delay-${index % 3 + 1}`} key={member.name} data-testid={`card-member-${index + 1}`}>
+                <div className="member-art" role="img" aria-label={`Slot gambar PNG anggota ${member.name}`}>
+                  <span className="member-number">XOV / 0{index + 1}</span>
+                  {member.image ? (
+                    <img className="member-img" src={member.image} alt={`PNG ${member.name}`} />
+                  ) : (
+                    <div className="member-placeholder">
+                      <span className="upload-glyph"><Upload aria-hidden="true" /></span>
+                      <span className="placeholder-title">Slot foto / PNG<br />{member.name}</span>
+                      <span className="placeholder-note">Tambahkan file gambar lokal untuk menampilkan visual anggota.</span>
+                    </div>
+                  )}
                 </div>
-                <div className="member-info"><h3>{member.name}</h3><div className="member-role">{member.role}</div><p>{member.copy}</p><div className="member-tag">contoh karakter · ganti profil ini</div></div>
+                <div className="member-info">
+                  <h3 className="member-name">{member.name}</h3>
+                  <div className="member-alias">{member.alias}</div>
+                  <p>Deskripsi member akan ditambahkan.</p>
+                  <a className="member-link" href={member.channel} target="_blank" rel="noreferrer" aria-label={`Kunjungi kanal YouTube ${member.name}`} data-testid={`link-member-${index + 1}`}>
+                    Kanal YouTube <ArrowUpRight aria-hidden="true" />
+                  </a>
+                </div>
               </article>
             ))}
           </div>
         </section>
 
-        <section className="section formats" id="frekuensi">
-          <div className="section-kicker reveal">03 — Hal-hal yang mungkin kita lakukan</div>
-          <h2 className="section-title reveal">Satu kanal,<br /><em>banyak semesta.</em></h2>
-          <div className="format-layout">
-            <p className="format-intro reveal">Format berikut adalah ide contoh, bukan jadwal atau program yang sedang berjalan. Isi siaran sesungguhnya bisa kamu temukan langsung di kanal resmi.</p>
-            <div className="format-list reveal delay-1">
-              <div className="format-row"><span className="num">01</span><div><h3>Ruang tamu tengah malam</h3><p>Obrolan ringan, cerita yang nyaris terlupa, dan pertanyaan yang tak buru-buru dijawab.</p></div><span className="arrow">↗</span></div>
-              <div className="format-row"><span className="num">02</span><div><h3>Ekspedisi dari kursi</h3><p>Menjelajah game, dunia rekaan, atau misteri kecil dengan rasa ingin tahu sebagai kompas.</p></div><span className="arrow">↗</span></div>
-              <div className="format-row"><span className="num">03</span><div><h3>Frekuensi pendengar</h3><p>Surat, rekomendasi, dan cerita dari kamu. Ruang ini selalu lebih ramai kalau dibagi.</p></div><span className="arrow">↗</span></div>
+        <section className="channel-section" id="kanal" aria-labelledby="channel-title">
+          <div className="channel-layout reveal">
+            <div className="channel-copy">
+              <div className="section-kicker">03 / Kanal utama</div>
+              <h2 className="section-title" id="channel-title">Masuk ke<br /><em>XOV.</em></h2>
+              <p>Kunjungi kanal YouTube resmi Xtra Ordinary Vour untuk menemukan konten terbaru dari kolektif.</p>
+              <a className="button-primary" href={channel} target="_blank" rel="noreferrer" data-testid="link-youtube-featured">
+                <Play fill="currentColor" aria-hidden="true" /> Buka kanal YouTube <ArrowUpRight aria-hidden="true" />
+              </a>
             </div>
-          </div>
-        </section>
-
-        <section className="broadcast" aria-labelledby="broadcast-title">
-          <div className="broadcast-panel reveal">
-            <div className="broadcast-visual" role="img" aria-label="Ilustrasi panggung siaran imajiner"><span className="play-button" aria-hidden="true"><Play fill="currentColor" size={19} /></span></div>
-            <div className="broadcast-copy">
-              <div className="broadcast-meta">Kanal resmi · satu klik dari sini</div>
-              <h2 id="broadcast-title" className="section-title">Penasaran<br />sama suaranya?</h2>
-              <p>Halaman ini cuma pintu depan. Sinyal sungguhan, video, dan kabar terbaru ada di kanal YouTube Xtra Ordinary Vour.</p>
-              <a className="button-primary" href={channel} target="_blank" rel="noreferrer" data-testid="link-youtube-featured"><Play fill="currentColor" /> Kunjungi kanal YouTube <ArrowUpRight /></a>
-            </div>
-          </div>
-        </section>
-
-        <section className="signal" id="pendengar">
-          <div className="reveal">
-            <div className="section-kicker">04 — Frekuensi terbuka</div>
-            <h2 className="section-title">Bawa ceritamu.<br /><em>Kami dengar.</em></h2>
-            <p>Tempat terbaik untuk ikut menyapa, menonton, atau sekadar melihat apa yang sedang terjadi adalah kanal resmi kami. Sampai jumpa di sana.</p>
-            <div className="signal-action"><a className="button-primary" href={channel} target="_blank" rel="noreferrer" data-testid="link-youtube-community">Ikuti frekuensinya <ArrowUpRight /></a></div>
-          </div>
-          <div className="signal-card reveal delay-1">
-            <small>CATATAN UNTUK PENDENGAR / 001</small>
-            <blockquote>“Kamu tidak perlu menjelaskan kenapa hal-hal kecil terasa besar.”</blockquote>
-            <cite>— pesan contoh dari ruang siaran</cite>
+            <aside className="channel-aside">
+              <small>XTRA ORDINARY VOUR / YOUTUBE</small>
+              <p>Satu identitas. Empat kreator. Temukan kanal yang paling ingin kamu ikuti.</p>
+            </aside>
           </div>
         </section>
       </main>
 
       <footer className="footer">
-        <a className="brand" href="#awal" aria-label="Kembali ke awal"><span className="brand-mark">xv</span><span>XTRA ORDINARY<small>VOUR / BROADCAST CLUB</small></span></a>
-        <div className="footer-note">Semua profil &amp; tulisan anggota di sini adalah placeholder.<br />© Xtra Ordinary Vour · Silakan ganti identitas dan konten contoh.</div>
+        <a className="brand" href="#awal" aria-label="Kembali ke awal">
+          <span className="brand-logo"><img src={logo} alt="" /></span>
+          <span className="brand-copy">XTRA ORDINARY<small>VOUR / CREATOR COLLECTIVE</small></span>
+        </a>
+        <div className="footer-note">© Xtra Ordinary Vour</div>
       </footer>
     </div>
   );
