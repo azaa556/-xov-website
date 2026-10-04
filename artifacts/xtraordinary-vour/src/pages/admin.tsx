@@ -318,7 +318,7 @@ export default function AdminPage() {
 
   if (authLoading) return <CmsSkeleton />;
   if (!isAuthenticated) {
-    return <StatusScreen kind="login" title="Masuk untuk mengedit." copy="Editor ini khusus untuk pemilik situs XOV. Masuk untuk memeriksa akses akun Anda." action={login} actionLabel="Masuk" />;
+    return <StatusScreen kind="login" title="Masuk untuk mengedit." copy="Editor ini khusus untuk pemilik situs XOV. Masuk untuk memeriksa akses akun Anda." action={() => window.location.href = '#/admin'} actionLabel="Masuk" />;
   }
   if (accessQuery.isLoading) return <CmsSkeleton />;
   if (accessQuery.isError) {
