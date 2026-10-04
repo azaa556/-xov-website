@@ -10,6 +10,12 @@ servers:
 tags:
   - name: health
     description: Health operations
+  - name: Auth
+    description: Browser authentication operations
+  - name: CMS
+    description: Public site content and protected CMS editing
+  - name: Storage
+    description: Persistent image uploads and serving
 paths:
   /healthz:
     get:
@@ -24,6 +30,190 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+  /auth/user:
+    get:
+      tags: [Auth]
+      operationId: getCurrentAuthUser
+      summary: Get the current signed-in user
+      responses:
+        "200":
+          description: Current auth state
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AuthUserEnvelope"
+  /login:
+    get:
+      tags: [Auth]
+      operationId: beginBrowserLogin
+      summary: Start browser sign-in
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect to the sign-in provider
+  /callback:
+    get:
+      tags: [Auth]
+      operationId: handleBrowserLoginCallback
+      summary: Complete browser sign-in
+      parameters:
+        - name: code
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: state
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: iss
+          in: query
+          required: false
+          schema:
+            type: string
+            format: uri
+      responses:
+        "302":
+          description: Redirect back to the app
+  /logout:
+    get:
+      tags: [Auth]
+      operationId: logoutBrowserSession
+      summary: End the browser session
+      parameters:
+        - name: returnTo
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        "302":
+          description: Redirect to the sign-out provider
+  /admin/access:
+    get:
+      tags: [CMS]
+      operationId: getCmsAdminAccess
+      summary: Check whether the signed-in user can edit the site
+      responses:
+        "200":
+          description: Access check completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdminAccess"
+        "401":
+          description: Sign-in required
+  /site-content:
+    get:
+      tags: [CMS]
+      operationId: getPublicSiteContent
+      summary: Get the public website content
+      responses:
+        "200":
+          description: Current public content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+  /admin/site-content:
+    get:
+      tags: [CMS]
+      operationId: getAdminSiteContent
+      summary: Get site content for the CMS
+      responses:
+        "200":
+          description: Current editable site content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+        "401":
+          description: Sign-in required
+        "403":
+          description: User is not an authorized CMS admin
+    patch:
+      tags: [CMS]
+      operationId: updateAdminSiteContent
+      summary: Save member details and site theme
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SiteContent"
+      responses:
+        "200":
+          description: Updated site content
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SiteContent"
+        "400":
+          description: Invalid content
+        "401":
+          description: Sign-in required
+        "403":
+          description: User is not an authorized CMS admin
+  /storage/uploads/request-url:
+    post:
+      tags: [Storage]
+      operationId: requestUploadUrl
+      summary: Request a presigned URL for a member image
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UploadUrlRequest"
+      responses:
+        "200":
+          description: Upload URL generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UploadUrlResponse"
+        "400":
+          description: Invalid upload metadata
+        "401":
+          description: Sign-in required
+        "403":
+          description: User is not an authorized CMS admin
+  /storage/objects/{objectPath}:
+    get:
+      tags: [Storage]
+      operationId: getUploadedImage
+      summary: Serve an uploaded public member image
+      parameters:
+        - name: objectPath
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Object path under the private storage directory
+      responses:
+        "200":
+          description: Image bytes
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        "404":
+          description: Image not found
 components:
   schemas:
     HealthStatus:
@@ -33,4 +223,108 @@ components:
           type: string
       required:
         - status
+    AuthUser:
+      type: object
+      required: [id, email, firstName, lastName, profileImageUrl]
+      properties:
+        id:
+          type: string
+        email:
+          type: [string, "null"]
+          format: email
+        firstName:
+          type: [string, "null"]
+        lastName:
+          type: [string, "null"]
+        profileImageUrl:
+          type: [string, "null"]
+    AuthUserEnvelope:
+      type: object
+      required: [user]
+      properties:
+        user:
+          oneOf:
+            - $ref: "#/components/schemas/AuthUser"
+            - type: "null"
+    AdminAccess:
+      type: object
+      required: [authorized]
+      properties:
+        authorized:
+          type: boolean
+    SiteContent:
+      type: object
+      required: [members, theme]
+      properties:
+        members:
+          type: array
+          minItems: 1
+          items:
+            $ref: "#/components/schemas/SiteMember"
+        theme:
+          $ref: "#/components/schemas/SiteTheme"
+    SiteMember:
+      type: object
+      required: [id, name, alias, description, channel, imageUrl]
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 80
+        name:
+          type: string
+          minLength: 1
+          maxLength: 120
+        alias:
+          type: string
+          maxLength: 80
+        description:
+          type: string
+          maxLength: 600
+        channel:
+          type: string
+          format: uri
+          maxLength: 500
+        imageUrl:
+          type: [string, "null"]
+          maxLength: 1000
+    SiteTheme:
+      type: object
+      required: [base, violet, magenta]
+      properties:
+        base:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+        violet:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+        magenta:
+          type: string
+          pattern: "^#[0-9A-Fa-f]{6}$"
+    UploadUrlRequest:
+      type: object
+      required: [name, size, contentType]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 255
+        size:
+          type: integer
+          minimum: 1
+          maximum: 10485760
+        contentType:
+          type: string
+          enum: [image/png, image/jpeg, image/webp]
+    UploadUrlResponse:
+      type: object
+      required: [uploadURL, objectPath, metadata]
+      properties:
+        uploadURL:
+          type: string
+          format: uri
+        objectPath:
+          type: string
+        metadata:
+          $ref: "#/components/schemas/UploadUrlRequest"
 

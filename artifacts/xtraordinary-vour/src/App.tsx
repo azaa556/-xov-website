@@ -1,9 +1,15 @@
-import { type ReactNode, useEffect, useState } from 'react';
+import { type CSSProperties, type ReactNode, useEffect, useState } from 'react';
 import { ArrowDown, ArrowUpRight, Menu, Play, Upload, X } from 'lucide-react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import {
+  getGetPublicSiteContentQueryKey,
+  useGetPublicSiteContent,
+  type SiteContent,
+} from '@workspace/api-client-react';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import AdminPage from '@/pages/admin';
 import NotFound from '@/pages/not-found';
 import logo from '@assets/Tak_berjudul388_20260504151152_1790731249936.png';
 import {
@@ -15,8 +21,32 @@ import {
 
 const queryClient = new QueryClient();
 
+const FALLBACK_SITE_CONTENT: SiteContent = {
+  members: [
+    { id: 'azelyth', name: 'Azelyth Faeren', alias: 'Eren/Ren', description: 'Deskripsi member akan ditambahkan.', channel: 'https://youtube.com/@zelren14?si=NcVyPXxS2c7NfIhX', imageUrl: null },
+    { id: 'riyuzi', name: 'Riyuzi Vynae', alias: 'Riyu', description: 'Deskripsi member akan ditambahkan.', channel: 'https://www.youtube.com/@RiyuziVynae', imageUrl: null },
+    { id: 'azaa', name: 'Azaa Lockwood', alias: 'Azaa', description: 'Deskripsi member akan ditambahkan.', channel: 'https://youtube.com/@azaalockwood?si=-I9GXMdRn6uAtvVJ', imageUrl: null },
+    { id: 'shezi', name: 'Shezi Asta Freola', alias: 'Frell', description: 'Deskripsi member akan ditambahkan.', channel: 'https://www.youtube.com/@Rawrr_Frell', imageUrl: null },
+  ],
+  theme: { base: '#100E14', violet: '#BD67FF', magenta: '#FF4F9A' },
+};
+
 function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const contentQuery = useGetPublicSiteContent({
+    query: {
+      queryKey: getGetPublicSiteContentQueryKey(),
+      staleTime: 0,
+      refetchOnMount: 'always',
+      refetchOnWindowFocus: true,
+    },
+  });
+  const content = contentQuery.data ?? FALLBACK_SITE_CONTENT;
+  const themeStyle = {
+    '--void': content.theme.base,
+    '--violet': content.theme.violet,
+    '--magenta': content.theme.magenta,
+  } as CSSProperties;
 
   useEffect(() => {
     const nodes = document.querySelectorAll<HTMLElement>('.reveal');
@@ -46,15 +76,9 @@ function Home() {
 
   const closeMenu = () => setMenuOpen(false);
   const channel = 'https://youtube.com/@xtraordinaryvour?si=5Nu1DsjIdGtPeEm0';
-  const members = [
-    { name: 'Azelyth Faeren', alias: 'Eren/Ren', channel: 'https://youtube.com/@zelren14?si=NcVyPXxS2c7NfIhX', image: null as string | null },
-    { name: 'Riyuzi Vynae', alias: 'Riyu', channel: 'https://www.youtube.com/@RiyuziVynae', image: null as string | null },
-    { name: 'Azaa Lockwood', alias: 'Azaa', channel: 'https://youtube.com/@azaalockwood?si=-I9GXMdRn6uAtvVJ', image: null as string | null },
-    { name: 'Shezi Asta Freola', alias: 'Frell', channel: 'https://www.youtube.com/@Rawrr_Frell', image: null as string | null },
-  ];
 
   return (
-    <div className="site-shell">
+    <div className="site-shell" style={themeStyle}>
       <header className="topbar">
         <a className="brand" href="#awal" onClick={closeMenu} aria-label="Xtra Ordinary Vour, ke awal">
           <span className="brand-logo"><img src={logo} alt="" /></span>
@@ -70,6 +94,13 @@ function Home() {
           <a className="nav-cta" href={channel} target="_blank" rel="noreferrer" onClick={closeMenu} data-testid="link-youtube-nav">Kunjungi YouTube <ArrowUpRight /></a>
         </nav>
       </header>
+
+      {contentQuery.isError && (
+        <div className="site-content-warning" role="alert" data-testid="status-content-load-error">
+          Konten terbaru tidak dapat dimuat. Situs menampilkan informasi tersimpan sebelumnya.
+          <button type="button" onClick={() => void contentQuery.refetch()}>Coba lagi</button>
+        </div>
+      )}
 
       <main>
         <section className="hero" id="awal" aria-labelledby="hero-title">
@@ -110,24 +141,24 @@ function Home() {
             <p>Empat anggota Xtra Ordinary Vour. Pilih nama untuk menuju kanal masing-masing.</p>
           </div>
           <div className="member-grid" data-testid="member-grid">
-            {members.map((member, index) => (
-              <article className={`member-card reveal delay-${index % 3 + 1}`} key={member.name} data-testid={`card-member-${index + 1}`}>
-                <div className="member-art" role="img" aria-label={`Slot gambar PNG anggota ${member.name}`}>
+            {content.members.map((member, index) => (
+              <article className={`member-card reveal delay-${index % 3 + 1}`} key={member.id} data-testid={`card-member-${index + 1}`}>
+                <div className="member-art" role="img" aria-label={`Gambar anggota ${member.name}`}>
                   <span className="member-number">XOV / 0{index + 1}</span>
-                  {member.image ? (
-                    <img className="member-img" src={member.image} alt={`PNG ${member.name}`} />
+                  {member.imageUrl ? (
+                    <img className="member-img" src={member.imageUrl} alt={`Gambar ${member.name}`} />
                   ) : (
                     <div className="member-placeholder">
                       <span className="upload-glyph"><Upload aria-hidden="true" /></span>
                       <span className="placeholder-title">Slot foto / PNG<br />{member.name}</span>
-                      <span className="placeholder-note">Tambahkan file gambar lokal untuk menampilkan visual anggota.</span>
+                      <span className="placeholder-note">Gambar anggota belum ditambahkan.</span>
                     </div>
                   )}
                 </div>
                 <div className="member-info">
                   <h3 className="member-name">{member.name}</h3>
                   <div className="member-alias">{member.alias}</div>
-                  <p>Deskripsi member akan ditambahkan.</p>
+                  <p>{member.description}</p>
                   <a className="member-link" href={member.channel} target="_blank" rel="noreferrer" aria-label={`Kunjungi kanal YouTube ${member.name}`} data-testid={`link-member-${index + 1}`}>
                     Kanal YouTube <ArrowUpRight aria-hidden="true" />
                   </a>
@@ -160,7 +191,7 @@ function Home() {
           <span className="brand-logo"><img src={logo} alt="" /></span>
           <span className="brand-copy">XTRA ORDINARY<small>VOUR / CREATOR COLLECTIVE</small></span>
         </a>
-        <div className="footer-note">© Xtra Ordinary Vour</div>
+        <div className="footer-note">© Xtra Ordinary Vour <a className="footer-admin-link" href="/admin">Kelola situs</a></div>
       </footer>
     </div>
   );
@@ -172,6 +203,7 @@ function Router() {
     // survives a page crash.
     <RoutedErrorBoundary>
       <Switch>
+        <Route path="/admin" component={AdminPage} />
         <Route path="/" component={Home} />
         <Route component={NotFound} />
       </Switch>
