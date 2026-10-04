@@ -1,14 +1,8 @@
 {
-  "builds": [
+  "rewrites": [
     {
-      "src": "artifacts/xtraordinary-vour/package.json",
-      "use": "@vercel/static-build"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/artifacts/xtraordinary-vour/dist/public/index.html"
     }
   ]
 }
