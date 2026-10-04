@@ -330,7 +330,7 @@ export default function AdminPage() {
   if (contentQuery.isError) {
     return <StatusScreen kind="error" title="Konten gagal dimuat." copy="Editor tidak dapat mengambil konten situs saat ini. Silakan muat ulang konten." action={() => void contentQuery.refetch()} actionLabel="Muat ulang konten" secondaryAction={logout} secondaryLabel="Keluar" />;
   }
-  if (contentQuery.isLoading || !contentQuery.data) return <CmsSkeleton />;
+  // if (contentQuery.isLoading || !contentQuery.data) return <CmsSkeleton />;
 
   const members = form.watch('members');
   const theme = form.watch('theme');
