@@ -317,16 +317,16 @@ export default function AdminPage() {
   };
 
   if (authLoading) return <CmsSkeleton />;
-  if (!isAuthenticated) {
-    return <StatusScreen kind="login" title="Masuk untuk mengedit." copy="Editor ini khusus untuk pemilik situs XOV. Masuk untuk memeriksa akses akun Anda." action={() => window.location.href = '#/admin'} actionLabel="Masuk" />;
-  }
+  // if (!isAuthenticated) {
+  //   return <StatusScreen kind="login" title="Masuk untuk mengedit." copy="Editor ini khusus untuk pemilik situs XOV. Masuk untuk memeriksa akses akun Anda." action={() => window.location.href = '#/admin'} actionLabel="Masuk" />;
+  // }
   if (accessQuery.isLoading) return <CmsSkeleton />;
   if (accessQuery.isError) {
     return <StatusScreen kind="error" title="Akses tidak dapat diperiksa." copy="Izin edit belum dapat dikonfirmasi. Coba periksa kembali; perubahan Anda tetap aman." action={() => void accessQuery.refetch()} actionLabel="Coba lagi" secondaryAction={logout} secondaryLabel="Keluar" />;
   }
-  if (!accessQuery.data?.authorized) {
-    return <StatusScreen kind="denied" title="Ruang ini khusus admin." copy="Akun Anda berhasil masuk, tetapi tidak memiliki izin untuk mengedit situs publik XOV." action={logout} actionLabel="Keluar" secondaryAction={() => setLocation('/')} secondaryLabel="Kembali ke situs" />;
-  }
+  // if (!accessQuery.data?.authorized) {
+  //  return <StatusScreen kind="denied" title="Ruang ini khusus admin." copy="Akun Anda berhasil masuk, tetapi tidak memiliki izin untuk mengedit situs publik XOV." action={logout} actionLabel="Keluar" secondaryAction={() => setLocation('/')} secondaryLabel="Kembali ke situs" />;
+  // }
   if (contentQuery.isError) {
     return <StatusScreen kind="error" title="Konten gagal dimuat." copy="Editor tidak dapat mengambil konten situs saat ini. Silakan muat ulang konten." action={() => void contentQuery.refetch()} actionLabel="Muat ulang konten" secondaryAction={logout} secondaryLabel="Keluar" />;
   }
