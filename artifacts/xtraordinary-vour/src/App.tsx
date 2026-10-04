@@ -95,13 +95,6 @@ function Home() {
         </nav>
       </header>
 
-      {contentQuery.isError && (
-        <div className="site-content-warning" role="alert" data-testid="status-content-load-error">
-          Konten terbaru tidak dapat dimuat. Situs menampilkan informasi tersimpan sebelumnya.
-          <button type="button" onClick={() => void contentQuery.refetch()}>Coba lagi</button>
-        </div>
-      )}
-
       <main>
         <section className="hero" id="awal" aria-labelledby="hero-title">
           <div className="hero-copy">
