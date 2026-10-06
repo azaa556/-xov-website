@@ -246,20 +246,25 @@ export default function AdminPage() {
   const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({});
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
-  const form = useForm<SiteContent>({
-      defaultValues: contentQuery.data ?? {
-    members: [
-      { id: '1', name: 'Azelyth Faeren', alias: 'Ren/Eren', description: '', channelUrl: 'https://youtube.com/@zelren14?si=NcVyPXxS2c7NfIhX', imageUrl: '' },
-      { id: '2', name: 'Riyuzi Vynae', alias: 'Riyu', description: '', channelUrl: 'https://youtube.com/@riyuzivynae?si=ajgIkWZaQ4ByTqVK', imageUrl: '' },
-      { id: '3', name: 'Azaa Lockwood', alias: 'Azaa', description: '', channelUrl: 'https://youtube.com/@azaalockwood?si=-I9GXMdRn6uAtvVJ', imageUrl: '' },
-      { id: '4', name: 'Shezi Asta freola', alias: 'Frell', description: '', channelUrl: 'https://youtube.com/@rawrr_frell?si=rEn0G0dTIawu1Yhj', imageUrl: '' },
-    ],
-    theme: { base: '#100E14', violet: '#BD67FF', magenta: '#FF4F9A' },
+    const form = useForm<SiteContent>({
+    defaultValues: contentQuery.data ?? {
+      members: [
+        { id: '1', name: 'Azelyth Faeren', alias: 'Ren/Eren', description: '', channelUrl: 'https://youtube.com/@zelren1475', imageUrl: '' },
+        { id: '2', name: 'Riyuzi Vynae', alias: 'Riyu', description: '', channelUrl: 'https://youtube.com/Priyuzivynae751', imageUrl: '' },
+        { id: '3', name: 'Azaa Lockwood', alias: 'Azaa', description: '', channelUrl: 'https://youtube.com/@azaalockwood', imageUrl: '' },
+        { id: '4', name: 'Shezi Asta Freola', alias: 'Frell', description: '', channelUrl: 'https://youtube.com/@ramrr_frell', imageUrl: '' },
+      ],
+      theme: { base: '#100E14', violet: '#BD67FF', magenta: '#FF4F9A' },
+    },
+  });
+
   const serverContent = contentQuery.data;
-useEffect(() => {
-  if (serverContent?.members?.length && !form.formState.isDirty) {
-    form.reset(serverContent);
-  }
+  useEffect(() => {
+    if (serverContent?.members?.length && !form.formState.isDirty) {
+      form.reset(serverContent);
+    }
+  }, [serverContent, form]);
+
 }, [serverContent, form]);
 
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>, memberIndex: number) => {
