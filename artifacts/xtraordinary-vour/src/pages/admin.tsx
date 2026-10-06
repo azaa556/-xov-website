@@ -256,9 +256,11 @@ export default function AdminPage() {
     ],
     theme: { base: '#100E14', violet: '#BD67FF', magenta: '#FF4F9A' },
   const serverContent = contentQuery.data;
-  useEffect(() => {
-    if (serverContent && !form.formState.isDirty) form.reset(serverContent);
-  }, [serverContent, form]);
+useEffect(() => {
+  if (serverContent?.members?.length && !form.formState.isDirty) {
+    form.reset(serverContent);
+  }
+}, [serverContent, form]);
 
   const handleUpload = async (event: ChangeEvent<HTMLInputElement>, memberIndex: number) => {
     const file = event.target.files?.[0];
