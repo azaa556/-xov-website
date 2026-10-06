@@ -258,24 +258,13 @@ export default function AdminPage() {
     },
   });
 
-  const serverContent = contentQuery.data;
+    const serverContent = contentQuery.data;
   useEffect(() => {
     if (serverContent?.members?.length && !form.formState.isDirty) {
       form.reset(serverContent);
     }
   }, [serverContent, form]);
 
-}, [serverContent, form]);
-
-  const handleUpload = async (event: ChangeEvent<HTMLInputElement>, memberIndex: number) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-    const member = form.getValues(`members.${memberIndex}`);
-    setUploadErrors((current) => ({ ...current, [member.id]: '' }));
-    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      setUploadErrors((current) => ({ ...current, [member.id]: 'Pilih gambar PNG, JPEG, atau WebP.' }));
-      event.target.value = '';
-      return;
     }
     if (file.size > MAX_IMAGE_SIZE) {
       setUploadErrors((current) => ({ ...current, [member.id]: 'Ukuran gambar melebihi batas 10 MB.' }));
