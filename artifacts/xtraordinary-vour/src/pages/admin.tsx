@@ -302,28 +302,21 @@ export default function AdminPage() {
         shouldValidate: true,
       });
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Gagal mengunggah. Silakan coba lagi.';
-      setUploadErrors((current) => ({ ...current, [member.id]: message }));
-    } finally {
-      setUploadingMemberId(null);
-      event.target.value = '';
-    }
-  };
-
-  const saveChanges = async (data: SiteContent) => {
-
+        const saveChanges = async (data: SiteContent) => {
+    setSaveMessage(null);
+    setSaveError(null);
+    try {
       const saved = await updateContent.mutateAsync({ data });
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: getGetAdminSiteContentQueryKey() }),
-        queryClient.invalidateQueries({ queryKey: getGetPublicSiteContentQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getCmsAdminAccessQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getAdminSiteContentQueryKey() }),
       ]);
       form.reset(saved);
-    setSaveMessage('Perubahan situs berhasil diterbitkan.');
+      setSaveMessage('Perubahan situs berhasil diterbitkan.');
     } catch (error) {
       setSaveError(error instanceof Error ? error.message : 'Perubahan tidak dapat disimpan. Silakan coba lagi.');
     }
   };
-
   if (authLoading) return <CmsSkeleton />;
   // if (!isAuthenticated) {
   //   return <StatusScreen kind="login" title="Masuk untuk mengedit." copy="Editor ini khusus untuk pemilik situs XOV. Masuk untuk memeriksa akses akun Anda." action={() => window.location.href = '#/admin'} actionLabel="Masuk" />;
