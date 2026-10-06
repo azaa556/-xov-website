@@ -234,19 +234,22 @@ export default function AdminPage() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const accessQuery = useGetCmsAdminAccess({
-    query: { enabled: isAuthenticated, queryKey: getGetCmsAdminAccessQueryKey(), retry: false },
+    query: { enabled: isAuthenticated, queryKey: getCmsAdminAccessQueryKey(), retry: false },
   });
+
   const isAuthorized = isAuthenticated && accessQuery.data?.authorized === true;
   const contentQuery = useGetAdminSiteContent({
-    query: { enabled: isAuthorized, queryKey: getGetAdminSiteContentQueryKey(), retry: false },
+    query: { enabled: isAuthorized, queryKey: getAdminSiteContentQueryKey(), retry: false },
   });
+
   const updateContent = useUpdateAdminSiteContent();
   const requestUploadUrl = useRequestUploadUrl();
   const [uploadingMemberId, setUploadingMemberId] = useState<string | null>(null);
   const [uploadErrors, setUploadErrors] = useState<Record<string, string>>({});
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
-    const form = useForm<SiteContent>({
+
+  const form = useForm<SiteContent>({
     defaultValues: contentQuery.data ?? {
       members: [
         { id: '1', name: 'Azelyth Faeren', alias: 'Ren/Eren', description: '', channelUrl: 'https://youtube.com/@zelren1475', imageUrl: '' },
@@ -258,13 +261,22 @@ export default function AdminPage() {
     },
   });
 
-    const serverContent = contentQuery.data;
+  const serverContent = contentQuery.data;
   useEffect(() => {
     if (serverContent?.members?.length && !form.formState.isDirty) {
       form.reset(serverContent);
     }
   }, [serverContent, form]);
 
+  const handleUpload = async (event: ChangeEvent<HTMLInputElement>, memberIndex: number) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+    const member = form.getValues(`members.${memberIndex}`);
+    setUploadErrors((current) => ({ ...current, [member.id]: '' }));
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      setUploadErrors((current) => ({ ...current, [member.id]: 'Pilih gambar PNG, JPEG, atau WebP.' }));
+      event.target.value = '';
+      return;
     }
     if (file.size > MAX_IMAGE_SIZE) {
       setUploadErrors((current) => ({ ...current, [member.id]: 'Ukuran gambar melebihi batas 10 MB.' }));
@@ -299,9 +311,7 @@ export default function AdminPage() {
   };
 
   const saveChanges = async (data: SiteContent) => {
-    setSaveMessage(null);
-    setSaveError(null);
-    try {
+
       const saved = await updateContent.mutateAsync({ data });
       await Promise.all([
         queryClient.invalidateQueries({ queryKey: getGetAdminSiteContentQueryKey() }),
