@@ -59,9 +59,10 @@ function MemberEditor({ member, index, form, uploading, uploadError, onUpload }:
   return (
     <article className="cms-member-card" data-testid={`card-member-${member.id}`}>
       <div className="cms-member-top">
-        <h3 data-testid={`text-member-name-${member.id}`}>{member.name || `Anggota ${index + 1}`}</h3>
+        <h3 data-testid={`text-member-name-${member.id}`}>{member.name}</h3>
         <span className="cms-member-index">XOV / 0{index + 1}</span>
       </div>
+
       <div className="cms-member-body">
         <div className="cms-fields">
           <FormField
@@ -69,62 +70,77 @@ function MemberEditor({ member, index, form, uploading, uploadError, onUpload }:
             name={`members.${index}.name`}
             render={({ field }) => (
               <FormItem className="cms-field">
-                <FormLabel className="cms-field-label">Nama tampilan</FormLabel>
-                <FormControl><Input {...field} className="cms-input" placeholder="Nama anggota" data-testid={`input-member-name-${member.id}`} /></FormControl>
+                <FormLabel className="cms-field-label">Nama Tampilan</FormLabel>
+                <FormControl>
+                  <Input {...field} className="cms-input" placeholder="Nama tampilan..." />
+                </FormControl>
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name={`members.${index}.alias`}
             render={({ field }) => (
               <FormItem className="cms-field">
                 <FormLabel className="cms-field-label">Alias</FormLabel>
-                <FormControl><Input {...field} className="cms-input" placeholder="Nama alias kreator" data-testid={`input-member-alias-${member.id}`} /></FormControl>
+                <FormControl>
+                  <Input {...field} className="cms-input" placeholder="Alias..." />
+                </FormControl>
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name={`members.${index}.description`}
             render={({ field }) => (
               <FormItem className="cms-field">
-                <FormLabel className="cms-field-label">Deskripsi singkat</FormLabel>
-                <FormControl><Textarea {...field} className="cms-textarea" placeholder="Tulis satu atau dua kalimat tentang kreator ini" data-testid={`input-member-description-${member.id}`} /></FormControl>
+                <FormLabel className="cms-field-label">Deskripsi Singkat</FormLabel>
+                <FormControl>
+                  <Textarea {...field} className="cms-textarea" placeholder="Deskripsi..." />
+                </FormControl>
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name={`members.${index}.channel`}
             render={({ field }) => (
               <FormItem className="cms-field">
-                <FormLabel className="cms-field-label">Tautan kanal</FormLabel>
-                <FormControl><Input {...field} className="cms-input" type="url" placeholder="https://" data-testid={`input-member-channel-${member.id}`} /></FormControl>
+                <FormLabel className="cms-field-label">Tautan Kanal</FormLabel>
+                <FormControl>
+                  <Input {...field} className="cms-input" type="url" placeholder="https://..." />
+                </FormControl>
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
             name={`members.${index}.imageUrl`}
             render={({ field }) => (
               <FormItem className="cms-field">
-                <FormLabel className="cms-field-label">Gambar anggota</FormLabel>
+                <FormLabel className="cms-field-label">Gambar Anggota</FormLabel>
                 <div className="cms-image-row">
                   <div className="cms-image-preview" data-testid={`preview-member-image-${member.id}`}>
                     {imageUrl ? (
                       <img src={imageUrl} alt={`Pratinjau gambar ${member.name}`} />
                     ) : (
-                      <div className="cms-image-placeholder"><div><CloudUpload aria-hidden="true" /><br />Belum ada gambar</div></div>
+                      <div className="cms-image-placeholder">
+                        <div><CloudUpload /></div>
+                      </div>
                     )}
                   </div>
+
                   <div className="cms-image-controls">
                     <input
                       ref={fileRef}
                       id={inputId}
                       className="cms-file-input"
                       type="file"
-                      accept="image/png,image/jpeg,image/webp"
+                      accept="image/png, image/jpeg, image/webp"
                       aria-label={`Unggah gambar untuk ${member.name}`}
                       data-testid={`input-member-image-file-${member.id}`}
                       onChange={(event) => onUpload(event, index)}
@@ -136,13 +152,14 @@ function MemberEditor({ member, index, form, uploading, uploadError, onUpload }:
                       disabled={uploading}
                       data-testid={`button-upload-member-image-${member.id}`}
                     >
-                      {uploading ? <LoaderCircle className="cms-spin" aria-hidden="true" /> : <CloudUpload aria-hidden="true" />}
-                      {uploading ? 'Mengunggah…' : 'Unggah gambar'}
+                      {uploading ? <LoaderCircle className="cms-spin" /> : null}
+                      {uploading ? 'Mengunggah...' : 'Unggah Gambar'}
                     </button>
-                    <p className="cms-field-help">PNG, JPEG, atau WebP · maksimal 10 MB</p>
-                    {uploadError && <p className="cms-inline-error" role="alert" data-testid={`error-upload-member-image-${member.id}`}>{uploadError}</p>}
+                    <p className="cms-field-help">PNG, JPEG, atau WebP maks 10MB.</p>
+                    {uploadError && <p className="cms-inline-error" role="alert">{uploadError}</p>}
                   </div>
                 </div>
+
                 <FormControl>
                   <Input
                     {...field}
@@ -154,7 +171,7 @@ function MemberEditor({ member, index, form, uploading, uploadError, onUpload }:
                     data-testid={`input-member-image-url-${member.id}`}
                   />
                 </FormControl>
-                <p className="cms-field-help">Unggahan akan mengganti tautan ini. URL gambar tetap disimpan di layanan asal.</p>
+                <p className="cms-field-help">Unggahan akan mengganti tautan gambar secara otomatis.</p>
               </FormItem>
             )}
           />
@@ -167,17 +184,17 @@ function MemberEditor({ member, index, form, uploading, uploadError, onUpload }:
 function CmsSkeleton() {
   return (
     <div className="cms-page">
-      <header className="cms-topbar"><div className="cms-brand"><span className="cms-brand-mark">XV</span><span className="cms-brand-name">XTRA ORDINARY<small className="cms-brand-caption">VOUR / CREATOR COLLECTIVE</small></span></div></header>
-      <main className="cms-main" aria-label="Memuat editor situs" data-testid="status-content-loading">
-        <div className="cms-skeleton cms-skeleton-line" style={{ width: 210, height: 10, marginBottom: 20 }} />
-        <div className="cms-skeleton cms-skeleton-line" style={{ width: 'min(560px, 80%)', height: 54, marginBottom: 30 }} />
+      <header className="cms-topbar"><div className="cms-brand"><span className="cms-brand-mark">XOV</span></div></header>
+      <main className="cms-main" aria-label="Memuat editor situs" data-testid="cms-loading">
+        <div className="cms-skeleton cms-skeleton-line" style={{ width: '200px', height: '24px' }} />
+        <div className="cms-skeleton cms-skeleton-line" style={{ width: '300px', height: '16px' }} />
         <div className="cms-loading-grid">
           {[0, 1, 2, 3].map((item) => (
             <div className="cms-skeleton-card" key={item}>
-              <div className="cms-skeleton cms-skeleton-line" style={{ width: '56%' }} />
-              <div className="cms-skeleton cms-skeleton-line" style={{ width: '100%', height: 38, marginTop: 24 }} />
-              <div className="cms-skeleton cms-skeleton-line" style={{ width: '100%', height: 38, marginTop: 18 }} />
-              <div className="cms-skeleton cms-skeleton-line" style={{ width: '100%', height: 70, marginTop: 18 }} />
+              <div className="cms-skeleton cms-skeleton-line" style={{ width: '40%' }} />
+              <div className="cms-skeleton cms-skeleton-line" style={{ width: '80%' }} />
+              <div className="cms-skeleton cms-skeleton-line" style={{ width: '60%' }} />
+              <div className="cms-skeleton cms-skeleton-line" style={{ width: '100%' }} />
             </div>
           ))}
         </div>
@@ -198,8 +215,8 @@ function StatusScreen({
   kind: 'login' | 'denied' | 'error';
   title: string;
   copy: string;
-  action: () => void;
-  actionLabel: string;
+  action?: () => void;
+  actionLabel?: string;
   secondaryAction?: () => void;
   secondaryLabel?: string;
 }) {
@@ -207,22 +224,24 @@ function StatusScreen({
   return (
     <div className="cms-page">
       <header className="cms-topbar">
-        <div className="cms-brand"><span className="cms-brand-mark">XV</span><span><span className="cms-brand-name">XTRA ORDINARY</span><small className="cms-brand-caption">VOUR / CREATOR COLLECTIVE</small></span></div>
-        <a className="cms-text-button" href="/" data-testid="link-back-to-site"><ArrowLeft aria-hidden="true" /> Situs publik</a>
+        <div className="cms-brand"><span className="cms-brand-mark">XOV</span></div>
+        <a className="cms-text-button" href="/" data-testid="link-back-to-site"><ArrowLeft size={16} /> Kembali ke situs</a>
       </header>
       <main className="cms-main">
-        <section className="cms-status-card" aria-labelledby="cms-status-title">
+        <section className="cms-status-card" aria-labelledby="cms-status-heading">
           <div className="cms-status-icon"><Icon aria-hidden="true" /></div>
           <p className="cms-eyebrow">XOV / EDITOR SITUS</p>
           <h1 id="cms-status-title" data-testid={`heading-${kind}`}>{title}</h1>
           <p data-testid={`text-${kind}-message`}>{copy}</p>
           <div className="cms-status-actions">
-            <button className="cms-primary-action" type="button" onClick={action} data-testid={`button-${kind}-action`}>{actionLabel}</button>
+            {action && actionLabel && (
+              <button className="cms-primary-action" type="button" onClick={action}>{actionLabel}</button>
+            )}
             {secondaryAction && secondaryLabel && (
-              <button className="cms-text-button" type="button" onClick={secondaryAction} data-testid={`button-${kind}-secondary`}>{secondaryLabel}</button>
+              <button className="cms-text-button" type="button" onClick={secondaryAction}>{secondaryLabel}</button>
             )}
           </div>
-          <small className="cms-status-meta">Empat kreator · satu ruang bersama</small>
+          <small className="cms-status-meta">Enpat kreator • satu ruang</small>
         </section>
       </main>
     </div>
@@ -234,12 +253,12 @@ export default function AdminPage() {
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
   const accessQuery = useGetCmsAdminAccess({
-    query: { enabled: isAuthenticated, queryKey: getCmsAdminAccessQueryKey(), retry: false },
+    query: { enabled: isAuthenticated, queryKey: getGetCmsAdminAccessQueryKey() },
   });
 
-  const isAuthorized = isAuthenticated && accessQuery.data?.authorized === true;
+  const isAuthorized = isAuthenticated && accessQuery.data?.authorized;
   const contentQuery = useGetAdminSiteContent({
-    query: { enabled: isAuthorized, queryKey: getAdminSiteContentQueryKey(), retry: false },
+    query: { enabled: isAuthorized, queryKey: getGetAdminSiteContentQueryKey() },
   });
 
   const updateContent = useUpdateAdminSiteContent();
@@ -252,10 +271,10 @@ export default function AdminPage() {
   const form = useForm<SiteContent>({
     defaultValues: contentQuery.data ?? {
       members: [
-        { id: '1', name: 'Azelyth Faeren', alias: 'Ren/Eren', description: '', channelUrl: 'https://youtube.com/@zelren1475', imageUrl: '' },
-        { id: '2', name: 'Riyuzi Vynae', alias: 'Riyu', description: '', channelUrl: 'https://youtube.com/Priyuzivynae751', imageUrl: '' },
-        { id: '3', name: 'Azaa Lockwood', alias: 'Azaa', description: '', channelUrl: 'https://youtube.com/@azaalockwood', imageUrl: '' },
-        { id: '4', name: 'Shezi Asta Freola', alias: 'Frell', description: '', channelUrl: 'https://youtube.com/@ramrr_frell', imageUrl: '' },
+        { id: '1', name: 'Azelyth Faeren', alias: 'Ren/Eren', description: '', channel: '', imageUrl: '' },
+        { id: '2', name: 'Riyuzi Vynae', alias: 'Riyu', description: '', channel: '', imageUrl: '' },
+        { id: '3', name: 'Azaa Lockwood', alias: 'Azaa', description: '', channel: '', imageUrl: '' },
+        { id: '4', name: 'Shezi Asta Freolia', alias: 'Frell', description: '', channel: '', imageUrl: '' },
       ],
       theme: { base: '#100E14', violet: '#BD67FF', magenta: '#FF4F9A' },
     },
@@ -279,7 +298,7 @@ export default function AdminPage() {
       return;
     }
     if (file.size > MAX_IMAGE_SIZE) {
-      setUploadErrors((current) => ({ ...current, [member.id]: 'Ukuran gambar melebihi batas 10 MB.' }));
+      setUploadErrors((current) => ({ ...current, [member.id]: 'Ukuran gambar maksimal 10MB.' }));
       event.target.value = '';
       return;
     }
@@ -288,50 +307,94 @@ export default function AdminPage() {
     setSaveError(null);
     try {
       const upload = await requestUploadUrl.mutateAsync({
-        data: { name: file.name, size: file.size, contentType: file.type as 'image/png' | 'image/jpeg' | 'image/webp' },
+        data: { name: file.name, size: file.size, contentType: file.type },
       });
-      const response = await fetch(upload.uploadURL, {
+      const response = await fetch(upload.uploadUrl, {
         method: 'PUT',
         headers: { 'Content-Type': file.type },
         body: file,
       });
       if (!response.ok) throw new Error('Gambar tidak dapat diunggah. Silakan coba lagi.');
-      form.setValue(`members.${memberIndex}.imageUrl`, `/api/storage${upload.objectPath}`, {
+      form.setValue(`members.${memberIndex}.imageUrl`, `/api/storage/${upload.objectKey}`, {
         shouldDirty: true,
         shouldTouch: true,
         shouldValidate: true,
       });
     } catch (error) {
-        const saveChanges = async (data: SiteContent) => {
+      setUploadErrors((current) => ({
+        ...current,
+        [member.id]: error instanceof Error ? error.message : 'Gagal mengunggah gambar.',
+      }));
+    } finally {
+      setUploadingMemberId(null);
+      event.target.value = '';
+    }
+  };
+
+  const saveChanges = async (data: SiteContent) => {
     setSaveMessage(null);
     setSaveError(null);
     try {
       const saved = await updateContent.mutateAsync({ data });
       await Promise.all([
-        queryClient.invalidateQueries({ queryKey: getCmsAdminAccessQueryKey() }),
-        queryClient.invalidateQueries({ queryKey: getAdminSiteContentQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getGetCmsAdminAccessQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getGetAdminSiteContentQueryKey() }),
+        queryClient.invalidateQueries({ queryKey: getGetPublicSiteContentQueryKey() }),
       ]);
       form.reset(saved);
       setSaveMessage('Perubahan situs berhasil diterbitkan.');
     } catch (error) {
-      setSaveError(error instanceof Error ? error.message : 'Perubahan tidak dapat disimpan. Silakan coba lagi.');
+      setSaveError(error instanceof Error ? error.message : 'Perubahan tidak dapat disimpan.');
     }
   };
+
   if (authLoading) return <CmsSkeleton />;
-  // if (!isAuthenticated) {
-  //   return <StatusScreen kind="login" title="Masuk untuk mengedit." copy="Editor ini khusus untuk pemilik situs XOV. Masuk untuk memeriksa akses akun Anda." action={() => window.location.href = '#/admin'} actionLabel="Masuk" />;
-  // }
+  if (!isAuthenticated) {
+    return (
+      <StatusScreen
+        kind="login"
+        title="Masuk untuk mengedit"
+        copy="Area ini khusus untuk tim kreator XOV. Silakan masuk terlebih dahulu."
+        action={() => login()}
+        actionLabel="Masuk"
+      />
+    );
+  }
   if (accessQuery.isLoading) return <CmsSkeleton />;
   if (accessQuery.isError) {
-    return <StatusScreen kind="error" title="Akses tidak dapat diperiksa." copy="Izin edit belum dapat dikonfirmasi. Coba periksa kembali; perubahan Anda tetap aman." action={() => void accessQuery.refetch()} actionLabel="Coba lagi" secondaryAction={logout} secondaryLabel="Keluar" />;
+    return (
+      <StatusScreen
+        kind="error"
+        title="Akses tidak dapat diperiksa"
+        copy="Terjadi kesalahan saat memeriksa hak akses Anda."
+        action={() => accessQuery.refetch()}
+        actionLabel="Coba Lagi"
+      />
+    );
   }
-  // if (!accessQuery.data?.authorized) {
-  //  return <StatusScreen kind="denied" title="Ruang ini khusus admin." copy="Akun Anda berhasil masuk, tetapi tidak memiliki izin untuk mengedit situs publik XOV." action={logout} actionLabel="Keluar" secondaryAction={() => setLocation('/')} secondaryLabel="Kembali ke situs" />;
-  // }
+  if (!accessQuery.data?.authorized) {
+    return (
+      <StatusScreen
+        kind="denied"
+        title="Ruang ini khusus admin"
+        copy="Akun Anda belum terdaftar sebagai admin editor situs."
+        action={() => logout()}
+        actionLabel="Keluar"
+      />
+    );
+  }
   if (contentQuery.isError) {
-    return <StatusScreen kind="error" title="Konten gagal dimuat." copy="Editor tidak dapat mengambil konten situs saat ini. Silakan muat ulang konten." action={() => void contentQuery.refetch()} actionLabel="Muat ulang konten" secondaryAction={logout} secondaryLabel="Keluar" />;
+    return (
+      <StatusScreen
+        kind="error"
+        title="Konten gagal dimuat"
+        copy="Tidak dapat memuat data profil dan tema situs saat ini."
+        action={() => contentQuery.refetch()}
+        actionLabel="Coba Lagi"
+      />
+    );
   }
-  // if (contentQuery.isLoading || !contentQuery.data) return <CmsSkeleton />;
+  if (contentQuery.isLoading || !contentQuery.data) return <CmsSkeleton />;
 
   const members = form.watch('members');
   const theme = form.watch('theme');
@@ -349,36 +412,40 @@ export default function AdminPage() {
       <header className="cms-topbar">
         <div className="cms-brand">
           <span className="cms-brand-mark">XV</span>
-          <span><span className="cms-brand-name">XTRA ORDINARY</span><small className="cms-brand-caption">VOUR / CREATOR COLLECTIVE</small></span>
+          <span><span className="cms-brand-name">XTRA ORDINARY</span> <small>VOUR</small></span>
         </div>
         <div className="cms-header-actions">
           <div className="cms-user" data-testid="text-current-user">
             <span className="cms-user-initial" aria-hidden="true">{initials}</span>
             <span>{displayName}</span>
           </div>
-          <button className="cms-text-button" type="button" onClick={logout} data-testid="button-sign-out"><LogOut aria-hidden="true" /> Keluar</button>
+          <button className="cms-text-button" type="button" onClick={() => logout()}>
+            <LogOut size={16} /> Keluar
+          </button>
         </div>
       </header>
+
       <main className="cms-main">
         <div className="cms-heading">
           <div>
             <p className="cms-eyebrow">XOV / EDITOR SITUS / 01</p>
             <h1>Atur situs <em>Anda.</em></h1>
-            <p className="cms-heading-copy">Perbarui profil empat kreator dan warna situs. Perubahan akan tampil di situs publik setelah disimpan.</p>
+            <p className="cms-heading-copy">Perbarui profil empat kreator dan nuansa warna situs dari satu dashboard.</p>
           </div>
-          <div className={`cms-publish-state ${isDirty ? 'is-dirty' : 'is-saved'}`} data-testid="status-save-state">
-            {isDirty ? 'PERUBAHAN BELUM DISIMPAN' : 'SEMUA PERUBAHAN TERSIMPAN'}
+          <div className={`cms-publish-state ${isDirty ? 'is-dirty' : 'is-clean'}`}>
+            {isDirty ? 'PERUBAHAN BELUM DISIMPAN' : 'SEMUA PERUBAHAN TERPUBLIKASI'}
           </div>
         </div>
 
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(saveChanges)} data-testid="form-admin-content">
+          <form onSubmit={form.handleSubmit(saveChanges)} data-testid="form-cms-editor">
             <div className="cms-workspace">
               <section className="cms-content" aria-labelledby="cms-members-title">
                 <div className="cms-section-heading">
                   <h2 id="cms-members-title">Profil anggota</h2>
-                  <span data-testid="text-member-count">{String(members?.length ?? 0).padStart(2, '0')} / 4 ANGGOTA</span>
+                  <span data-testid="text-member-count">{String(members?.length ?? 0)} anggota</span>
                 </div>
+
                 <div className="cms-members">
                   {members?.map((member: SiteMember, index: number) => (
                     <MemberEditor
@@ -394,12 +461,13 @@ export default function AdminPage() {
                 </div>
               </section>
 
-              <aside className="cms-sidebar" aria-label="Tema situs dan pengaturan penerbitan">
+              <aside className="cms-sidebar" aria-label="Tema situs dan tindakan">
                 <section className="cms-side-panel" aria-labelledby="cms-theme-title">
                   <div className="cms-side-panel-head">
-                    <h2 id="cms-theme-title"><Palette size={15} aria-hidden="true" /> Palet warna</h2>
-                    <p>Tiga warna ini membentuk tampilan situs. Pilih warna atau masukkan kode hex.</p>
+                    <h2 id="cms-theme-title"><Palette size={15} aria-hidden="true" /> Palet Warna</h2>
+                    <p>Tiga warna ini membentuk tampilan situs. Pilih warna sesuai estetika kelompok.</p>
                   </div>
+
                   <div className="cms-theme-fields">
                     {themeFields.map((item) => (
                       <FormField
@@ -408,15 +476,18 @@ export default function AdminPage() {
                         name={item.name}
                         render={({ field }) => (
                           <FormItem className="cms-theme-row">
-                            <div><FormLabel className="cms-theme-name">{item.label}</FormLabel><span className="cms-theme-token">{item.token}</span></div>
+                            <div className="cms-theme-name">
+                              <FormLabel className="cms-theme-label">{item.label}</FormLabel>
+                              <small>{item.token}</small>
+                            </div>
                             <div className="cms-color-control">
                               <input
                                 type="color"
                                 className="cms-color-picker"
                                 value={field.value}
                                 onChange={field.onChange}
-                                  aria-label={`Pemilih warna ${item.label}`}
-                                  data-testid={`input-theme-${item.name.split('.')[1]}-picker`}
+                                aria-label={`Pemilih warna ${item.label}`}
+                                data-testid={`input-theme-${item.name}-picker`}
                               />
                               <FormControl>
                                 <Input
@@ -425,8 +496,8 @@ export default function AdminPage() {
                                   onChange={field.onChange}
                                   aria-label={`Kode hex ${item.label}`}
                                   maxLength={7}
-                                  pattern="^#[0-9A-Fa-f]{6}$"
-                                  data-testid={`input-theme-${item.name.split('.')[1]}-hex`}
+                                  pattern="^#([0-9A-Fa-f]{6})$"
+                                  data-testid={`input-theme-${item.name}-hex`}
                                 />
                               </FormControl>
                             </div>
@@ -435,7 +506,8 @@ export default function AdminPage() {
                       />
                     ))}
                   </div>
-                  <div className="cms-theme-strip" aria-label="Pratinjau warna situs" data-testid="preview-theme-colors">
+
+                  <div className="cms-theme-strip" aria-label="Pratinjau cepat warna tema">
                     <span style={{ backgroundColor: theme.base }} />
                     <span style={{ backgroundColor: theme.violet }} />
                     <span style={{ backgroundColor: theme.magenta }} />
@@ -443,16 +515,23 @@ export default function AdminPage() {
                 </section>
 
                 <section className="cms-side-panel cms-publish-panel" aria-labelledby="cms-publish-title">
-                  <h2 id="cms-publish-title"><Sparkles size={15} aria-hidden="true" /> Terbitkan perubahan</h2>
-                  <p>Simpan sekali untuk memperbarui profil anggota dan warna situs sekaligus.</p>
-                  <button className="cms-save-button" type="submit" disabled={!isDirty || updateContent.isPending || Boolean(uploadingMemberId)} data-testid="button-save-content">
-                    {updateContent.isPending ? <LoaderCircle aria-hidden="true" /> : saveMessage && !isDirty ? <Check aria-hidden="true" /> : <Save aria-hidden="true" />}
-                    {updateContent.isPending ? 'Menyimpan…' : saveMessage && !isDirty ? 'Diterbitkan' : 'Simpan perubahan'}
+                  <h2 id="cms-publish-title"><Sparkles size={15} aria-hidden="true" /> Terbitkan</h2>
+                  <p>Simpan sekali untuk memperbarui profil anggota dan tema situs secara langsung.</p>
+                  <button
+                    className="cms-save-button"
+                    type="submit"
+                    disabled={updateContent.isPending || !isDirty}
+                    data-testid="button-save-cms"
+                  >
+                    {updateContent.isPending ? <LoaderCircle className="cms-spin" /> : <Save size={16} />}
+                    {updateContent.isPending ? 'Menyimpan...' : 'Simpan Perubahan'}
                   </button>
-                  {saveMessage && !isDirty && <p className="cms-save-notice" role="status" data-testid="status-save-success">{saveMessage}</p>}
-                  {saveError && <p className="cms-save-error" role="alert" data-testid="status-save-error">{saveError}</p>}
-                  <a className="cms-text-button" href="/" target="_blank" rel="noreferrer" style={{ width: '100%', marginTop: 10 }} data-testid="link-preview-site">
-                    <ExternalLink aria-hidden="true" /> Pratinjau situs publik
+
+                  {saveMessage && !isDirty && <p className="cms-save-note" role="status"><Check size={14} /> {saveMessage}</p>}
+                  {saveError && <p className="cms-save-error" role="alert"><AlertCircle size={14} /> {saveError}</p>}
+
+                  <a className="cms-text-button" href="/" target="_blank" rel="noreferrer">
+                    <ExternalLink aria-hidden="true" size={14} /> Pratinjau situs
                   </a>
                 </section>
               </aside>
@@ -461,6 +540,5 @@ export default function AdminPage() {
         </Form>
       </main>
     </div>
-   );
+  );
 }
-  }
